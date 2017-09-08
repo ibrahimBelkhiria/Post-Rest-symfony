@@ -1,4 +1,4 @@
-Rest-news
+Rest-posts
 =========
 
-A Symfony project created on August 26, 2017, 1:18 pm.
+A Symfony Api to manage Posts.
