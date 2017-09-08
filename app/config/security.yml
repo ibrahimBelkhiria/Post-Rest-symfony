@@ -1,0 +1,49 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    encoders:
+            FOS\UserBundle\Model\UserInterface: bcrypt
+
+
+    providers:
+       fos_userbundle:
+                   id: fos_user.user_provider.username
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        api_doc:
+                    pattern: ^/api/doc
+                    security: false
+
+
+        login:
+                    pattern:  ^/api/login
+                    stateless: true
+                    anonymous: true
+                    form_login:
+                        check_path:               /api/login_check
+                        username_parameter: username
+                        password_parameter: password
+                        success_handler:          lexik_jwt_authentication.handler.authentication_success
+                        failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                        require_previous_session: false
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            provider: fos_userbundle
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+
+        main:
+            anonymous: ~
+
+    access_control:
+            - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
